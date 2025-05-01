@@ -37,11 +37,10 @@ def simulate_parlays(bankroll, sport, fixed_legs=None, fixed_bet_amount=None, fi
         combined_players = SPORT_PLAYERS[sport]
 
     parlays = []
-    total_used = 0.0
 
-    if fixed_bet_amount and fixed_bet_count:
-        stake = fixed_bet_amount
+    if fixed_bet_amount is not None and fixed_bet_count is not None:
         for _ in range(fixed_bet_count):
+            stake = fixed_bet_amount
             num_legs = fixed_legs or random.randint(2, 6)
             parlay = []
             for _ in range(num_legs):
@@ -60,7 +59,8 @@ def simulate_parlays(bankroll, sport, fixed_legs=None, fixed_bet_amount=None, fi
             parlays.append({"stake": stake, "legs": parlay})
         return parlays
 
-    while total_used < bankroll:
+    total_used = 0.0
+    while bankroll is not None and total_used < bankroll:
         remaining = bankroll - total_used
         max_stake = min(remaining, 15)
         min_stake = min(5, max_stake)
@@ -84,37 +84,3 @@ def simulate_parlays(bankroll, sport, fixed_legs=None, fixed_bet_amount=None, fi
         total_used = round(total_used + stake, 2)
 
     return parlays
-
-# -----------------------------
-# Streamlit UI
-# -----------------------------
-st.set_page_config(page_title="Multi-Sport Prop Bet Assistant V4", layout="wide")
-st.title("Daily Prop Bet Assistant (MLB, NBA, NHL — Parlay Optimizer)")
-
-tabs = st.tabs(["Smart Parlay Builder", "Custom Parlay Builder"])
-
-# Tab 1: Smart Parlay Builder
-tabs[0].subheader("Smart Mode: Let the system choose bet count and legs")
-sport = tabs[0].selectbox("Select Sport", options=["MLB", "NBA", "NHL", "Mixed"], key="sport1")
-bankroll = tabs[0].number_input("Enter your daily bankroll", min_value=10, max_value=1000, value=40, step=5, key="bankroll1")
-
-if tabs[0].button("Generate Smart Bets"):
-    parlays = simulate_parlays(bankroll, sport)
-    for idx, parlay in enumerate(parlays):
-        tabs[0].markdown(f"### Parlay {idx+1} — Stake: ${parlay['stake']}")
-        for leg in parlay['legs']:
-            tabs[0].markdown(f"- **{leg['Player']}** — {leg['Prop']} **{leg['Pick']} {leg['Line']}** (Confidence: {int(leg['Confidence']*100)}%)")
-
-# Tab 2: Custom Parlay Builder
-tabs[1].subheader("Custom Mode: You choose leg count and bet amount")
-sport_custom = tabs[1].selectbox("Select Sport", options=["MLB", "NBA", "NHL", "Mixed"], key="sport2")
-bet_amount = tabs[1].number_input("Amount per bet ($)", min_value=1.0, max_value=100.0, value=10.0, step=1.0)
-bet_count = tabs[1].number_input("Number of bets", min_value=1, max_value=10, value=3, step=1)
-legs_per_bet = tabs[1].number_input("Number of legs per bet", min_value=2, max_value=6, value=3, step=1)
-
-if tabs[1].button("Generate Custom Bets"):
-    parlays = simulate_parlays(bankroll=None, sport=sport_custom, fixed_legs=legs_per_bet, fixed_bet_amount=bet_amount, fixed_bet_count=bet_count)
-    for idx, parlay in enumerate(parlays):
-        tabs[1].markdown(f"### Parlay {idx+1} — Stake: ${parlay['stake']}")
-        for leg in parlay['legs']:
-            tabs[1].markdown(f"- **{leg['Player']}** — {leg['Prop']} **{leg['Pick']} {leg['Line']}** (Confidence: {int(leg['Confidence']*100)}%)")
