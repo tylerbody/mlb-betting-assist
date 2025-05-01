@@ -115,11 +115,11 @@ def simulate_parlays(bankroll, sport, fixed_legs=None, fixed_bet_amount=None, fi
         return parlays
 
     total_used = 0.0
-    while bankroll is not None and total_used < bankroll:
+    while bankroll is not None and total_used + 5 <= bankroll:
         remaining = bankroll - total_used
         max_stake = min(remaining, 15)
         min_stake = max(5, min(5, max_stake))
-        stake = round(random.uniform(min_stake, max_stake), 2)
+        stake = round(max(5, random.uniform(5, max_stake)), 2)
         num_legs = random.randint(2, 6)
         parlay = []
         for _ in range(num_legs):
