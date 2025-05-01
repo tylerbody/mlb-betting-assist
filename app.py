@@ -8,9 +8,74 @@ import altair as alt
 # -----------------------------
 # Prop Categories by Sport
 # -----------------------------
-SPORT_PROP_CATEGORIES = { ... }  # Same as before
+SPORT_PROP_CATEGORIES = {
+    "MLB": {
+        "Hitter Fantasy Score": "hitter",
+        "Total Bases": "hitter",
+        "Pitcher Strikeouts": "pitcher",
+        "1st Inning Runs Allowed": "pitcher",
+        "Hits + Runs + RBIs": "hitter",
+        "Home Runs": "hitter",
+        "Pitcher Fantasy Score": "pitcher",
+        "Hits Allowed": "pitcher",
+        "Stolen Bases": "hitter",
+        "Doubles": "hitter",
+        "Walks Allowed": "pitcher",
+        "1st Inning Walks Allowed": "pitcher",
+        "Singles": "hitter",
+        "Pitching Outs": "pitcher",
+        "Walks": "hitter",
+        "Hits": "hitter",
+        "Earned Runs Allowed": "pitcher",
+        "RBIs": "hitter",
+        "Runs": "hitter",
+        "Hitter Strikeouts": "hitter"
+    },
+    "NBA": {
+        "Assists": "player",
+        "Points + Rebounds + Assists": "player",
+        "Points": "player",
+        "Rebounds": "player",
+        "3-PT Made": "player",
+        "Points + Assists": "player",
+        "FG Made": "player",
+        "Points in First 5 Minutes": "player",
+        "Defensive Rebounds": "player",
+        "PRA in First 5 Minutes": "player",
+        "Fantasy Score": "player",
+        "Rebounds + Assists": "player",
+        "Offensive Rebounds": "player",
+        "3-PT Attempted": "player",
+        "Free Throws Made": "player",
+        "FG Attempted": "player",
+        "Points + Rebounds": "player",
+        "Dunks": "player",
+        "Blocked Shots": "player",
+        "Steals": "player",
+        "Personal Fouls": "player",
+        "Free Throws Attempted": "player",
+        "Turnovers": "player",
+        "Two Pointers Attempted": "player",
+        "Two Pointers Made": "player"
+    },
+    "NHL": {
+        "Assists": "player",
+        "Goalie Saves": "goalie",
+        "Points": "player",
+        "Goals": "player",
+        "Shots on Goal": "player",
+        "Time on Ice": "player",
+        "Faceoffs Won": "player",
+        "Hits": "player",
+        "Blocked Shots": "player"
+    }
+}
 
-SPORT_PLAYERS = { ... }  # Same as before
+SPORT_PLAYERS = {
+    "MLB": ["Mookie Betts", "Spencer Strider", "Aaron Judge", "Freddie Freeman", "Ronald Acuna Jr."],
+    "NBA": ["LeBron James", "Stephen Curry", "Luka Doncic", "Jayson Tatum", "Nikola Jokic"],
+    "NHL": ["Connor McDavid", "Sidney Crosby", "Auston Matthews", "Alex Ovechkin", "Igor Shesterkin"]
+}
 
 def generate_fake_data():
     days = pd.date_range(end=datetime.date.today(), periods=7)
