@@ -6,29 +6,75 @@ import datetime
 import altair as alt
 
 # -----------------------------
-# Sample Player Props and Categories
+# Prop Categories by Sport
 # -----------------------------
-PROP_CATEGORIES = {
-    "Hitter Fantasy Score": "hitter",
-    "Total Bases": "hitter",
-    "Pitcher Strikeouts": "pitcher",
-    "1st Inning Runs Allowed": "pitcher",
-    "Hits + Runs + RBIs": "hitter",
-    "Home Runs": "hitter",
-    "Pitcher Fantasy Score": "pitcher",
-    "Hits Allowed": "pitcher",
-    "Stolen Bases": "hitter",
-    "Doubles": "hitter",
-    "Walks Allowed": "pitcher",
-    "1st Inning Walks Allowed": "pitcher",
-    "Singles": "hitter",
-    "Pitching Outs": "pitcher",
-    "Walks": "hitter",
-    "Hits": "hitter",
-    "Earned Runs Allowed": "pitcher",
-    "RBIs": "hitter",
-    "Runs": "hitter",
-    "Hitter Strikeouts": "hitter"
+SPORT_PROP_CATEGORIES = {
+    "MLB": {
+        "Hitter Fantasy Score": "hitter",
+        "Total Bases": "hitter",
+        "Pitcher Strikeouts": "pitcher",
+        "1st Inning Runs Allowed": "pitcher",
+        "Hits + Runs + RBIs": "hitter",
+        "Home Runs": "hitter",
+        "Pitcher Fantasy Score": "pitcher",
+        "Hits Allowed": "pitcher",
+        "Stolen Bases": "hitter",
+        "Doubles": "hitter",
+        "Walks Allowed": "pitcher",
+        "1st Inning Walks Allowed": "pitcher",
+        "Singles": "hitter",
+        "Pitching Outs": "pitcher",
+        "Walks": "hitter",
+        "Hits": "hitter",
+        "Earned Runs Allowed": "pitcher",
+        "RBIs": "hitter",
+        "Runs": "hitter",
+        "Hitter Strikeouts": "hitter"
+    },
+    "NBA": {
+        "Assists": "player",
+        "Points + Rebounds + Assists": "player",
+        "Points": "player",
+        "Rebounds": "player",
+        "3-PT Made": "player",
+        "Points + Assists": "player",
+        "FG Made": "player",
+        "Points in First 5 Minutes": "player",
+        "Defensive Rebounds": "player",
+        "PRA in First 5 Minutes": "player",
+        "Fantasy Score": "player",
+        "Rebounds + Assists": "player",
+        "Offensive Rebounds": "player",
+        "3-PT Attempted": "player",
+        "Free Throws Made": "player",
+        "FG Attempted": "player",
+        "Points + Rebounds": "player",
+        "Dunks": "player",
+        "Blocked Shots": "player",
+        "Steals": "player",
+        "Personal Fouls": "player",
+        "Free Throws Attempted": "player",
+        "Turnovers": "player",
+        "Two Pointers Attempted": "player",
+        "Two Pointers Made": "player"
+    },
+    "NHL": {
+        "Assists": "player",
+        "Goalie Saves": "goalie",
+        "Points": "player",
+        "Goals": "player",
+        "Shots on Goal": "player",
+        "Time on Ice": "player",
+        "Faceoffs Won": "player",
+        "Hits": "player",
+        "Blocked Shots": "player"
+    }
+}
+
+SPORT_PLAYERS = {
+    "MLB": ["Mookie Betts", "Spencer Strider", "Aaron Judge", "Freddie Freeman", "Ronald Acuna Jr."],
+    "NBA": ["LeBron James", "Stephen Curry", "Luka Doncic", "Jayson Tatum", "Nikola Jokic"],
+    "NHL": ["Connor McDavid", "Sidney Crosby", "Auston Matthews", "Alex Ovechkin", "Igor Shesterkin"]
 }
 
 # -----------------------------
@@ -43,7 +89,9 @@ def generate_fake_data():
 # -----------------------------
 # Simulate Optimized Parlay Bets
 # -----------------------------
-def simulate_parlays(bankroll):
+def simulate_parlays(bankroll, sport):
+    props = SPORT_PROP_CATEGORIES[sport]
+    players = SPORT_PLAYERS[sport]
     parlays = []
     total_used = 0.0
 
@@ -55,8 +103,8 @@ def simulate_parlays(bankroll):
         num_legs = random.randint(2, 6)
         parlay = []
         for _ in range(num_legs):
-            prop = random.choice(list(PROP_CATEGORIES.keys()))
-            player = random.choice(["Mookie Betts", "Spencer Strider", "Aaron Judge", "Freddie Freeman", "Ronald Acuna Jr."])
+            prop = random.choice(list(props.keys()))
+            player = random.choice(players)
             line = round(random.uniform(0.5, 3.0), 1)
             pick = random.choice(["Over", "Under"])
             confidence = round(random.uniform(0.7, 0.95), 2)
@@ -75,14 +123,15 @@ def simulate_parlays(bankroll):
 # -----------------------------
 # Streamlit UI
 # -----------------------------
-st.set_page_config(page_title="MLB Prop Bet Assistant V2", layout="wide")
-st.title("MLB Daily Prop Bet Assistant (Parlay Optimizer v2)")
+st.set_page_config(page_title="Multi-Sport Prop Bet Assistant V3", layout="wide")
+st.title("Daily Prop Bet Assistant (MLB, NBA, NHL — Parlay Optimizer)")
 
-bankroll = st.number_input("Enter your daily bankroll (e.g. $40)", min_value=10, max_value=1000, value=40, step=5)
+sport = st.selectbox("Select Sport", options=["MLB", "NBA", "NHL"])
+bankroll = st.number_input("Enter your daily bankroll", min_value=10, max_value=1000, value=40, step=5)
 
 if st.button("Generate Today's Bet Slips"):
-    parlays = simulate_parlays(bankroll)
-    st.subheader("Generated Multi-Leg Parlay Slips")
+    parlays = simulate_parlays(bankroll, sport)
+    st.subheader(f"Generated Multi-Leg Parlay Slips ({sport})")
     for idx, parlay in enumerate(parlays):
         st.markdown(f"### Parlay {idx+1} — Stake: ${parlay['stake']}")
         for leg in parlay['legs']:
